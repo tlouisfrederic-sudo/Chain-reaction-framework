@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chain Reaction Framework — Gold</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F1F4F8;--white:#FFFFFF;
+  --gold:#D4A017;--gold2:#E8B820;--gold-l:rgba(212,160,23,.10);--gold-br:rgba(212,160,23,.35);
+  --blue:#1A56DB;--blue-l:rgba(26,86,219,.08);--blue-br:rgba(26,86,219,.25);
+  --grn:#059669;--grn-l:#ECFDF5;--grn-br:#A7F3D0;
+  --red:#DC2626;--red-l:#FEF2F2;--red-br:#FECACA;
+  --amb:#D97706;--amb-l:#FFFBEB;--amb-br:#FDE68A;
+  --pur:#7C3AED;--pur-l:#F5F3FF;--pur-br:#DDD6FE;
+  --tx:#0F172A;--tx2:#475569;--tx3:#94A3B8;
+  --border:#E2E8F0;--border2:#CBD5E1;
+  --mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;
+}
+html,body{background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:13px}
+body{padding:24px}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#0A0800,#1A1400);border-radius:14px;padding:28px 32px;margin-bottom:20px}
+.header-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--gold2);text-transform:uppercase;margin-bottom:10px}
+.header-title{font-size:24px;font-weight:700;color:#fff;margin-bottom:6px}
+.header-sub{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px}
+.chain-flow{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.7);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:12px 16px;line-height:1.8}
+.chain-flow span{color:var(--gold2)}
+
+/* STEP CARDS */
+.step{background:var(--white);border:1.5px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden}
+.step-head{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.step-num{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0;font-family:var(--mono);color:#fff}
+.step-title{font-size:14px;font-weight:700;flex:1}
+.step-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.04em}
+.step-body{padding:16px 20px}
+
+/* ROWS */
+.row{display:grid;grid-template-columns:180px 1fr;gap:0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:none}
+.row-key{padding:10px 14px;font-size:11px;font-weight:600;color:var(--tx2);background:var(--bg);border-right:1px solid var(--border)}
+.row-val{padding:10px 14px;font-size:12px;color:var(--tx2);line-height:1.6}
+.row-val strong{color:var(--tx);font-weight:600}
+
+/* SCENARIO TABLE */
+.scen-table{width:100%;border-collapse:collapse;font-size:12px}
+.scen-table th{background:var(--bg);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);padding:8px 12px;text-align:left;border-bottom:1.5px solid var(--border)}
+.scen-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55;color:var(--tx2)}
+.scen-table tr:last-child td{border-bottom:none}
+.scen-table tr:hover td{background:var(--bg)}
+.td-bull{color:var(--grn);font-weight:700;font-family:var(--mono)}
+.td-bear{color:var(--red);font-weight:700;font-family:var(--mono)}
+.td-neut{color:var(--amb);font-weight:700;font-family:var(--mono)}
+
+/* FORMULA */
+.formula{background:var(--gold-l);border:1.5px solid var(--gold-br);border-radius:8px;padding:12px 16px;margin:10px 0;font-family:var(--mono);font-size:13px;color:var(--tx)}
+.formula-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:4px}
+
+/* FINAL VERDICT */
+.verdict-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:10px 0}
+.verdict-card{border-radius:8px;padding:12px 14px;border:1.5px solid transparent}
+.verdict-card.bull{background:var(--grn-l);border-color:var(--grn-br)}
+.verdict-card.bear{background:var(--red-l);border-color:var(--red-br)}
+.verdict-card.wait{background:var(--amb-l);border-color:var(--amb-br)}
+.verdict-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.verdict-card.bull .verdict-title{color:var(--grn)}
+.verdict-card.bear .verdict-title{color:var(--red)}
+.verdict-card.wait .verdict-title{color:var(--amb)}
+.verdict-body{font-size:11.5px;line-height:1.6;color:var(--tx2)}
+
+/* THREE QUESTIONS */
+.three-q{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.q-row{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--bg);border-radius:8px;border:1px solid var(--border)}
+.q-num{width:22px;height:22px;background:var(--blue);color:#fff;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;font-family:var(--mono)}
+.q-text{font-size:12px;color:var(--tx);font-weight:600;flex:1;line-height:1.4}
+.q-ans{font-size:11px;color:var(--tx2);margin-top:3px;line-height:1.5}
+
+/* NOTE BOX */
+.note{background:var(--pur-l);border:1px solid var(--pur-br);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--pur);line-height:1.6;margin-top:10px}
+.key-level{background:var(--gold-l);border:1px solid var(--gold-br);border-radius:6px;padding:7px 12px;font-family:var(--mono);font-size:11px;color:var(--tx);margin:4px 0;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Gold Macro Trading · June 2026</div>
+  <div class="header-title">Chain Reaction Framework</div>
+  <div class="header-sub">How any macro event flows through to gold — read this after any data release or headline, in order, top to bottom</div>
+  <div class="chain-flow">
+    EVENT → <span>Surprise vs consensus</span> → Bond curve shape → <span>Decompose (nominals vs breakevens → real yields)</span> → DXY confirms or contradicts → <span>Oil chain active or reversing</span> → Fed hike probability up or down → <span>Fear premium adds or removes</span> → Channels aligned = <span>TRADE</span> · Channels fighting = <span>WAIT</span>
+  </div>
+</div>
+
+<!-- STEP 0 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:#0F172A">0</div>
+    <div class="step-title">Expectation Theory — Before anything else</div>
+    <div class="step-badge" style="background:var(--bg);border:1px solid var(--border2);color:var(--tx3)">ALWAYS FIRST</div>
+  </div>
+  <div class="step-body">
+    <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden">
+      <div class="row"><div class="row-key">The only question</div><div class="row-val"><strong>Did this beat, miss, or match consensus — and by how much?</strong></div></div>
+      <div class="row"><div class="row-key">Why it matters</div><div class="row-val">Markets price the expected future state continuously. The move is always relative to consensus, never absolute. A hot print that was fully expected = no move. A surprise = large move.</div></div>
+      <div class="row"><div class="row-key">Ask yourself</div><div class="row-val">Is this a one-off or does it confirm a trend? Was this already partially priced from earlier data this week?</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 1 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:var(--blue)">1</div>
+    <div class="step-title">Bonds — React first, read the curve</div>
+    <div class="step-badge" style="background:var(--blue-l);border:1px solid var(--blue-br);color:var(--blue)">BONDS MOVE FIRST</div>
+  </div>
+  <div class="step-body">
+    <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px">
+      <div class="row"><div class="row-key">2yr yield</div><div class="row-val">The Fed signal. Rises when market prices a hike. Falls when market prices a cut. Your real-time hike probability indicator.</div></div>
+      <div class="row"><div class="row-key">10yr yield</div><div class="row-val">Growth and inflation signal. Rises on hot inflation or strong growth. Falls on growth fear or flight to safety.</div></div>
+      <div class="row"><div class="row-key">30yr yield</div><div class="row-val">Purest long-term inflation signal. Less sensitive to Fed decisions than the front end.</div></div>
+      <div class="row"><div class="row-key">Curve shape</div><div class="row-val"><strong>Bear flattening</strong> (front end up more) = hiking regime = bearish gold. <strong>Bull steepening</strong> (both down, front end more) = Fed cutting = most bullish gold.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:var(--gold);color:#0A0800">2</div>
+    <div class="step-title">Real Yield Decomposition — The only number that matters for gold</div>
+    <div class="step-badge" style="background:var(--gold-l);border:1px solid var(--gold-br);color:var(--amb)">PRIMARY SIGNAL</div>
+  </div>
+  <div class="step-body">
+    <div class="formula">
+      <div class="formula-lbl">The formula</div>
+      Real yield = Nominal (DGS10) − Breakeven (T10YIE) = DFII10 · Open all three immediately after any major event
+    </div>
+    <table class="scen-table">
+      <thead><tr><th>Scenario</th><th>What happened</th><th>Real yield</th><th>Gold</th></tr></thead>
+      <tbody>
+        <tr><td>Nominals up, breakevens flat</td><td>Fed channel driving — tightening expectations</td><td class="td-bear">UP — ceiling tightens</td><td class="td-bear">↓ Bearish</td></tr>
+        <tr><td>Nominals up, breakevens up more</td><td>Inflation expectations dominating over Fed</td><td class="td-bull">DOWN — ceiling lifts</td><td class="td-bull">↑ Bullish</td></tr>
+        <tr><td>Nominals down, breakevens flat</td><td>Fed cutting expected, growth falling</td><td class="td-bull">DOWN — ceiling lifts</td><td class="td-bull">↑ Bullish</td></tr>
+        <tr><td>Nominals down, breakevens down</td><td>Proportional — disinflation but growth fear</td><td class="td-neut">FLAT — ceiling unchanged</td><td class="td-neut">→ Neutral</td></tr>
+        <tr><td>Breakevens up faster than nominals</td><td>Inflation expectations outpacing Fed tightening</td><td class="td-bull">FALLS — despite surface yield rise</td><td class="td-bull">↑ Bullish</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STEP 3 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:#0891B2">3</div>
+    <div class="step-title">DXY — The amplifier</div>
+    <div class="step-badge" style="background:rgba(8,145,178,.1);border:1px solid rgba(8,145,178,.3);color:#0891B2">MECHANICAL HEADWIND / TAILWIND</div>
+  </div>
+  <div class="step-body">
+    <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px">
+      <div class="row"><div class="row-key">The mechanism</div><div class="row-val">Gold is priced in dollars. Dollar up = gold more expensive globally = foreign demand falls = price falls. Dollar down = opposite.</div></div>
+      <div class="row"><div class="row-key">Rate differential</div><div class="row-val">Higher US rates vs rest of world → capital flows to dollar → DXY strengthens → headwind for gold.</div></div>
+      <div class="row"><div class="row-key">Key level</div><div class="row-val"><strong>DXY 200-day EMA.</strong> Above it = dollar regime intact = ceiling active. Below it = dollar breaking down = ceiling removed. Gold cannot rally while DXY is above 200-day in a rising real yield environment.</div></div>
+      <div class="row"><div class="row-key">Alignment check</div><div class="row-val">Bonds hawkish + DXY up = double bearish gold. Bonds dovish + DXY down = double bullish. Divergence = wait.</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="key-level"><span>DXY above 200d EMA</span><span style="color:var(--red);font-weight:700">CEILING ACTIVE</span></div>
+      <div class="key-level"><span>DXY below 200d EMA</span><span style="color:var(--grn);font-weight:700">CEILING REMOVED</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:var(--amb);color:#fff">4</div>
+    <div class="step-title">Oil — Inflation chain transmission</div>
+    <div class="step-badge" style="background:var(--amb-l);border:1px solid var(--amb-br);color:var(--amb)">4-6 WEEK LAG</div>
+  </div>
+  <div class="step-body">
+    <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px">
+      <div class="row"><div class="row-key">The chain</div><div class="row-val">Oil up → CPI up in 4-6 weeks → Fed stays hawkish → real yields stay elevated → gold capped.</div></div>
+      <div class="row"><div class="row-key">Reverse chain</div><div class="row-val">Oil down → CPI down in 4-6 weeks → Fed can cut eventually → real yields compress → gold ceiling lifts.</div></div>
+      <div class="row"><div class="row-key">Key levels</div><div class="row-val">WTI above $90 = inflation chain active. Below $85 sustained = disinflation pathway opening. <strong>Each $10 fall removes ~0.25% CPI.</strong></div></div>
+      <div class="row"><div class="row-key">The paradox</div><div class="row-val">Oil up on Iran escalation = bearish gold via inflation chain AND bullish via fear premium. Channels fight. Gold goes sideways. This is why gold was range-bound with an active war.</div></div>
+      <div class="row"><div class="row-key">2026 paradox</div><div class="row-val">Strikes cancelled = gold UP. Inflation chain tail risk removal (avoiding oil $140, CPI 7%) is worth more than the war premium loss. Net bullish in stagflation regime.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:var(--pur)">5</div>
+    <div class="step-title">Fed Channel — Bridge between data and gold</div>
+    <div class="step-badge" style="background:var(--pur-l);border:1px solid var(--pur-br);color:var(--pur)">HIKE / CUT / HOLD</div>
+  </div>
+  <div class="step-body">
+    <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px">
+      <div class="row"><div class="row-key">Three states</div><div class="row-val"><strong>Easing (cutting)</strong> = real yields fall = ceiling lifts = most bullish. <strong>Frozen (on hold)</strong> = real yields stable = range. <strong>Tightening (hiking)</strong> = real yields rise = ceiling tightens = most bearish.</div></div>
+      <div class="row"><div class="row-key">Read it daily</div><div class="row-val">Check December hike probability before every session. If it moved overnight — why and what changed.</div></div>
+    </div>
+    <table class="scen-table">
+      <thead><tr><th>Scenario</th><th>Chain reaction</th><th>Gold</th></tr></thead>
+      <tbody>
+        <tr><td>Data beats consensus</td><td>2yr yield up → hike prob up → real yields up → DXY up → gold falls</td><td class="td-bear">↓ Bearish</td></tr>
+        <tr><td>Data misses consensus</td><td>2yr yield down → hike prob down → real yields down → DXY down → gold rises</td><td class="td-bull">↑ Bullish</td></tr>
+        <tr><td>In line with consensus</td><td>No repricing. Real yields unchanged. Gold range holds.</td><td class="td-neut">→ Neutral</td></tr>
+        <tr><td>Hot data + wages beat</td><td>Wage-price spiral signal. Hike undeniable. Real yields spike. DXY surges. Most bearish.</td><td class="td-bear">↓↓ Strong bear</td></tr>
+        <tr><td>Soft data + wages miss</td><td>Spiral not activating. Warsh holds cover. Real yields compress. Most bullish.</td><td class="td-bull">↑↑ Strong bull</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STEP 6 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:var(--red)">6</div>
+    <div class="step-title">Fear Channel — War premium and geopolitical</div>
+    <div class="step-badge" style="background:var(--red-l);border:1px solid var(--red-br);color:var(--red)">OPERATES INDEPENDENTLY</div>
+  </div>
+  <div class="step-body">
+    <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px">
+      <div class="row"><div class="row-key">Three layers</div><div class="row-val"><strong>Structural de-dollarisation</strong> ($1,000-1,500) — does not move on headlines. <strong>Iran war premium</strong> ($200-300) — moves on deal/escalation. <strong>Active risk spike</strong> — fast in, fast out, 24-48h.</div></div>
+      <div class="row"><div class="row-key">Exit condition</div><div class="row-val">War premium exits ONLY when tankers physically move through a reopened Strait. Not on a draft MoU. Not on headlines. Physical evidence only.</div></div>
+      <div class="row"><div class="row-key">Fear dominates when</div><div class="row-val">Sudden escalation or unexpected ceasefire collapse. Fear channel overwhelms macro channels temporarily. Active spike: do not chase.</div></div>
+    </div>
+    <table class="scen-table">
+      <thead><tr><th>Fear scenario</th><th>What happens</th><th>Direction</th></tr></thead>
+      <tbody>
+        <tr><td>Escalation — oil spikes</td><td>War premium adds but oil reactivates inflation chain. Channels fight. Gold volatile, direction unclear.</td><td class="td-neut">→ Mixed</td></tr>
+        <tr><td>Deal confirmed + oil falls</td><td>War premium exits AND inflation chain reverses. Both channels bullish. Most powerful gold catalyst.</td><td class="td-bull">↑↑ Strong bull</td></tr>
+        <tr><td>Ceasefire collapses</td><td>War premium surges. Oil spikes. Inflation chain reactivates. Short spike then sells off on real yield pressure.</td><td class="td-neut">→ Spike then fade</td></tr>
+        <tr><td>Deal headline (unconfirmed)</td><td>Partial premium exit. 20-30% credit. Pattern: spike → fade → settle below pre-headline.</td><td class="td-neut">→ Fade</td></tr>
+        <tr><td>Strikes cancelled</td><td>Tail risk removal. Inflation chain catastrophe averted. Net bullish even though war premium slightly reduced.</td><td class="td-bull">↑ Bullish (paradox)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STEP 7 -->
+<div class="step">
+  <div class="step-head">
+    <div class="step-num" style="background:var(--grn)">7</div>
+    <div class="step-title">Final Read — Are the channels aligned or fighting?</div>
+    <div class="step-badge" style="background:var(--grn-l);border:1px solid var(--grn-br);color:var(--grn)">TRADE DECISION</div>
+  </div>
+  <div class="step-body">
+    <div class="verdict-grid">
+      <div class="verdict-card bear">
+        <div class="verdict-title">All channels bearish</div>
+        <div class="verdict-body">Hot data + real yields up + DXY up + oil up + hike priced. <strong>Sell gold with conviction.</strong></div>
+      </div>
+      <div class="verdict-card bull">
+        <div class="verdict-title">All channels bullish</div>
+        <div class="verdict-body">Soft data + real yields down + DXY down + oil down + cuts return. <strong>Buy gold with conviction.</strong></div>
+      </div>
+      <div class="verdict-card wait">
+        <div class="verdict-title">Channels mixed / fighting</div>
+        <div class="verdict-body">Fear channel bullish but Fed channel bearish — or vice versa. <strong>Range holds. Wait. No trade.</strong></div>
+      </div>
+    </div>
+    <div class="three-q">
+      <div class="q-row">
+        <div class="q-num">01</div>
+        <div>
+          <div class="q-text">Did real yields move and which direction?</div>
+          <div class="q-ans">Ceiling tighter or looser — this is the primary gold signal. DFII10 direction is the tiebreaker when channels are mixed.</div>
+        </div>
+      </div>
+      <div class="q-row">
+        <div class="q-num">02</div>
+        <div>
+          <div class="q-text">Is the fear channel adding or removing premium?</div>
+          <div class="q-ans">Floor higher or lower — war premium still intact, partially exited, or fully priced out. Physical evidence only for exit.</div>
+        </div>
+      </div>
+      <div class="q-row">
+        <div class="q-num">03</div>
+        <div>
+          <div class="q-text">Are the channels aligned or fighting?</div>
+          <div class="q-ans">Aligned = trade with conviction, size up. Fighting = wait for resolution. One dominant, others neutral = moderate conviction, smaller size.</div>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <strong>Real yields are the tiebreaker.</strong> When unsure which channel is dominant — check DFII10. Whichever direction it moved is the answer. Everything else is context around the primary ceiling signal.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
